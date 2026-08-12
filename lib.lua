@@ -56,48 +56,46 @@ function Windo.new()
 end
 
 function Windo:ShowSplash()
-    local splash = NewInstance("Frame", {
+    self.Splash = NewInstance("Frame", {
         Name = "Splash_" .. RandomString(8),
-        Size = UDim2.new(1, 0, 1, 0),
-        BackgroundColor3 = Color3.fromRGB(10, 10, 10),
+        Size = UDim2.new(0, 300, 0, 200),
+        Position = UDim2.new(0.5, -150, 0.5, -100),
+        BackgroundColor3 = Colors.Bg,
         BorderSizePixel = 0,
-        ZIndex = 100,
         Parent = self.Gui
     })
     
-    NewInstance("UICorner", {CornerRadius = UDim.new(0, 4), Parent = splash})
+    NewInstance("UICorner", {CornerRadius = UDim.new(0, 6), Parent = self.Splash})
+    NewInstance("UIStroke", {Color = Colors.Border, Thickness = 1, Parent = self.Splash})
     
     local logo = NewInstance("TextLabel", {
-        Size = UDim2.new(0, 300, 0, 60),
-        Position = UDim2.new(0.5, -150, 0.5, -40),
+        Size = UDim2.new(1, 0, 0, 40),
+        Position = UDim2.new(0, 0, 0, 40),
         BackgroundTransparency = 1,
         Text = "Windo",
         TextColor3 = Colors.Text,
-        TextSize = 42,
+        TextSize = 24,
         Font = Enum.Font.GothamBlack,
-        ZIndex = 101,
-        Parent = splash
+        Parent = self.Splash
     })
     
     local sub = NewInstance("TextLabel", {
-        Size = UDim2.new(0, 300, 0, 20),
-        Position = UDim2.new(0.5, -150, 0.5, 20),
+        Size = UDim2.new(1, 0, 0, 20),
+        Position = UDim2.new(0, 0, 0, 80),
         BackgroundTransparency = 1,
-        Text = "Initializing environment...",
+        Text = "Initializing...",
         TextColor3 = Colors.Sub,
         TextSize = 12,
         Font = Enum.Font.Gotham,
-        ZIndex = 101,
-        Parent = splash
+        Parent = self.Splash
     })
     
     local bar = NewInstance("Frame", {
-        Size = UDim2.new(0, 200, 0, 2),
-        Position = UDim2.new(0.5, -100, 0.5, 60),
+        Size = UDim2.new(0, 150, 0, 4),
+        Position = UDim2.new(0.5, -75, 0, 120),
         BackgroundColor3 = Color3.fromRGB(30, 30, 30),
         BorderSizePixel = 0,
-        ZIndex = 101,
-        Parent = splash
+        Parent = self.Splash
     })
     NewInstance("UICorner", {CornerRadius = UDim.new(1, 0), Parent = bar})
     
@@ -105,23 +103,11 @@ function Windo:ShowSplash()
         Size = UDim2.new(0, 0, 1, 0),
         BackgroundColor3 = Colors.Accent,
         BorderSizePixel = 0,
-        ZIndex = 102,
         Parent = bar
     })
     NewInstance("UICorner", {CornerRadius = UDim.new(1, 0), Parent = fill})
     
     Tween(fill, 1.5, Enum.EasingStyle.Quart, Enum.EasingDirection.Out, {Size = UDim2.new(1, 0, 1, 0)})
-    
-    task.spawn(function()
-        task.wait(2)
-        Tween(splash, 0.5, Enum.EasingStyle.Quint, Enum.EasingDirection.In, {BackgroundTransparency = 1})
-        Tween(logo, 0.5, nil, nil, {TextTransparency = 1})
-        Tween(sub, 0.5, nil, nil, {TextTransparency = 1})
-        Tween(bar, 0.5, nil, nil, {BackgroundTransparency = 1})
-        Tween(fill, 0.5, nil, nil, {BackgroundTransparency = 1})
-        task.wait(0.5)
-        splash:Destroy()
-    end)
 end
 
 function Windo:CreateWindow(config)
@@ -132,6 +118,13 @@ function Windo:CreateWindow(config)
         Title = config.Title or "Windo Application"
     }, Window)
     
+    if self.Splash then
+        Tween(self.Splash, 0.3, nil, nil, {BackgroundTransparency = 1, Size = UDim2.new(0, 250, 0, 150)})
+        task.wait(0.3)
+        self.Splash:Destroy()
+        self.Splash = nil
+    end
+    
     self.Main = NewInstance("Frame", {
         Name = "Win_" .. RandomString(10),
         Size = UDim2.new(0, 650, 0, 450),
@@ -139,7 +132,7 @@ function Windo:CreateWindow(config)
         BackgroundColor3 = Colors.Bg,
         BorderSizePixel = 0,
         ClipsDescendants = true,
-        Parent = self.ScreenGui or self.Gui
+        Parent = self.Gui
     })
     NewInstance("UICorner", {CornerRadius = UDim.new(0, 6), Parent = self.Main})
     NewInstance("UIStroke", {Color = Colors.Border, Thickness = 1, Parent = self.Main})
@@ -624,7 +617,6 @@ function Section:AddColorPicker(config)
     end
     
     btn.MouseButton1Click:Connect(function()
-        -- Simplified color picker logic for brevity in this massive file
         local picker = NewInstance("Frame", {
             Size = UDim2.new(0, 200, 0, 200),
             Position = UDim2.new(0, btn.AbsolutePosition.X - 150, 0, btn.AbsolutePosition.Y + 30),
@@ -639,7 +631,7 @@ function Section:AddColorPicker(config)
         local rgb = NewInstance("ImageButton", {
             Size = UDim2.new(0, 150, 0, 150),
             Position = UDim2.new(0, 10, 0, 10),
-            Image = "rbxassetid://6885811389", -- Standard Saturation/Value image
+            Image = "rbxassetid://6885811389",
             ZIndex = 21,
             Parent = picker
         })
